@@ -1,40 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Hire Item Checker</title>
-  <!-- Link to a simple CSS framework for a mobile-friendly design (Bootstrap) -->
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="p-3">
-  <h1 class="mb-4">Hire Item Checker</h1>
-  <div class="form-group">
-    <label for="startDate">Start Date</label>
-    <input type="date" id="startDate" class="form-control">
-  </div>
-  <div class="form-group">
-    <label for="endDate">End Date</label>
-    <input type="date" id="endDate" class="form-control">
-  </div>
-  <div class="form-group">
-    <label for="hireItem">Hire Item</label>
-    <input type="text" id="hireItem" class="form-control" placeholder="Enter or search item">
-  </div>
-  <button id="checkAvailability" class="btn btn-primary">Check Availability</button>
-  
-  <!-- A section to display results -->
-  <div id="results" class="mt-4"></div>
-
-  <!-- Include Bootstrap JS (optional for extra functionality) -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- A basic JavaScript file for handling button clicks -->
-  <script>
-    document.getElementById('checkAvailability').addEventListener('click', function() {
-      // For now, we just show a message. Later, this will call our backend.
-      document.getElementById('results').innerHTML = '<p>Checking availability...</p>';
-    });
-  </script>
-</body>
-</html>
+<script>
+  document.getElementById('checkAvailability').addEventListener('click', async function() {
+    // Get the values from the input fields
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const hireItem = document.getElementById('hireItem').value;
+    
+    // Show a loading message
+    document.getElementById('results').innerHTML = '<p>Checking availability...</p>';
+    
+    try {
+      // Send a POST request to your backend API endpoint
+      const response = await fetch('/api/check-availability', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ startDate, endDate, hireItem })
+      });
+      
+      // Parse the JSON response
+      const data = await response.json();
+      
+      // Display the result (you can adjust the format as needed)
+      document.getElementById('results').innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+    } catch (error) {
+      document.getElementById('results').innerHTML = '<p>Error checking availability.</p>';
+    }
+  });
+</script>
